@@ -6,11 +6,11 @@ import { useEffect, useState } from "react"
 import LoadingScreen from "./components/loading-screen"
 import { auth } from "./firebase"
 import StartScreen from "./routes/startScreen"
-import CreateAccount from "./components/createAccountOne"
 import LoginSignup from "./routes/loginSignup"
-import VerifyEmail from "./components/verifyEmail"
 import Login from "./components/login"
-import PersonalInfoForm from "./components/personalInfoForm"
+import Menu from "./routes/menu"
+import CreateAccountStep from "./routes/createAccount"
+import Matching from "./routes/matching"
 
 
 
@@ -38,12 +38,8 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "verifyEmail",
-    element: <VerifyEmail />,
-  },
-  {
-    path: "personalInfoForm",
-    element: <PersonalInfoForm />,
+    path: "Matching",
+    element: <Matching />,
   },
   {
     path: "/loginSignup",
@@ -51,7 +47,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/createAccount",
-    element: <CreateAccount />
+    element: <CreateAccountStep />
+  },
+  {
+    path: "/menu",
+    element: <Menu />
   }
 ])
 

@@ -3,8 +3,11 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebase';
 import { emailSignal } from '../signals';
 
+interface CreateAccountProps {
+  onNext: () => void; 
+}
 
-const CreateAccount: React.FC = () => {
+const CreateAccount: React.FC<CreateAccountProps> = ({ onNext }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,6 +46,7 @@ const CreateAccount: React.FC = () => {
     } finally {
       setIsLoading(false);
       emailSignal.value = email;
+      onNext();
     }
   };
 

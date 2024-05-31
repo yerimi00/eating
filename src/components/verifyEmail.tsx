@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { sendEmailVerification } from "firebase/auth";
 import { auth } from '../firebase';
 
-const VerifyEmail: React.FC = () => {
+interface CreateAccountProps {
+  onNext: () => void; 
+}
+
+const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [userVerified, setUserVerified] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -35,6 +40,23 @@ const VerifyEmail: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const onClick = async() => {
+    const user = auth.currentUser;
+    if (!user) {
+      setMessage("No user signed in.");
+      return;
+    }
+
+    await user.reload();
+    setUserVerified(user.emailVerified); 
+    
+    if (userVerified) {
+      onNext(); 
+    } else {
+      setMessage("Please verify your email before proceeding."); 
+    }
+  }
   
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -62,8 +84,13 @@ const VerifyEmail: React.FC = () => {
           <p className="mt-4 text-center text-gray-700">{message}</p>
         )}
       </form>
+      <button onClick={onClick} className='bg-blue-500 text-white mt-4 py-2 px-4 rounded w-full'>
+        다음
+      </button>
     </div>
   );
 };
 
 export default VerifyEmail;
+
+
