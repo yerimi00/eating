@@ -1,3 +1,10 @@
+#Eating
+
+새내기, 복학생, 점심을 같이 먹을 밥친구를 찾는 모든 사람들에게 학식 메이트를 찾아주는 서비스입니다. 
+
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
