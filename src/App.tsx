@@ -34,6 +34,10 @@ const router = createBrowserRouter([
     element: <StartScreen />,
   },
   {
+    path: "profile",
+    element: <Profile />,
+  },
+  {
     path: "login",
     element: <Login />,
   },
