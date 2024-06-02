@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import Layout from "./components/layout"
 import Home from "./routes/home"
 import Profile from "./routes/profile"
 import { useEffect, useState } from "react"
@@ -10,56 +9,43 @@ import LoginSignup from "./routes/loginSignup"
 import Login from "./components/login"
 import Menu from "./routes/menu"
 import CreateAccountStep from "./routes/createAccount"
-import Matching from "./routes/matchMate"
-import MatchMate from "./components/matchConditions"
+import MatchMate from "./routes/matchMate"
+
 
 
 
 const router = createBrowserRouter([
   {
-    path:"/",
-    element: <Layout />,
-    children: [
-      {
-      path: "",
-      element: <Home />,
-      },
-      {
-      path: "profile",
-      element: <Profile />
-      }
-    ]
-  },
-  {
-    path: "start",
+    path: "/",
     element: <StartScreen />,
   },
   {
-    path: "profile",
-    element: <Profile />,
-  },
-  {
-    path: "matchMate",
-    element: <MatchMate />,
+    path: "loginSignup",
+    element: (<LoginSignup />),
   },
   {
     path: "login",
     element: <Login />,
   },
   {
-    path: "Matching",
-    element: <Matching />,
-  },
-  {
-    path: "/loginSignup",
-    element: (<LoginSignup />),
-  },
-  {
-    path: "/createAccount",
+    path: "createAccount",
     element: <CreateAccountStep />
   },
   {
-    path: "/menu",
+    path: "home",
+    element: <Home />,
+    },
+  {
+    path: "profile",
+    element: <Profile />
+    },
+  {
+    path: "matchMate",
+    element: <MatchMate />,
+  },
+  
+  {
+    path: "menu",
     element: <Menu />
   }
 ])

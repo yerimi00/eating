@@ -54,15 +54,6 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
     try{
       setLoading(true);
       alert("Personal Info created successfully!");
-     /*  await addDoc(collection(db, "user"), {
-        name,
-        grade,
-        gender,
-        createdAt: Date.now(),
-        userId: user?.uid,
-        secretNone: randomNoun,
-        secretAd: randomAd
-      }); */
       const docRef = doc(db, "user", user?.uid);
       const data = {
         name,

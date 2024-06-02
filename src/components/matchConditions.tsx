@@ -2,11 +2,11 @@ import React from 'react';
 import { CONDITIONGENDER, CONDITIONGRADE, CONDITIONLOCATION } from '../constants';
 
 interface MatchConditionsProps {
-  gender: number;
+  gender: number | null;
   setGender: (gender: number) => void;
-  location: number;
+  location: number | null;
   setLocation: (location: number) => void;
-  grade: number;
+  grade: number | null;
   setGrade: (grade: number) => void;
   handleMatch: () => void;
 }

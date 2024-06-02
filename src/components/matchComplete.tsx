@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface MatchCompleteProps {
-  mate: { name: string; location: string };
+  mate: { name: string; location: number };
   handleCancel: () => void;
 }
 
