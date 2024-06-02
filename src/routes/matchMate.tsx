@@ -1,18 +1,38 @@
 import React, { useState } from 'react';
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, Query, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import MatchConditions from '../components/matchConditions';
 import Matching from '../components/\bmatching';
 import MatchComplete from '../components/matchComplete';
 
-
 const MatchMate: React.FC = () => {
-  const [gender, setGender] = useState<string>('랜덤');
-  const [location, setLocation] = useState<string>('랜덤');
-  const [grade, setGrade] = useState<string>('랜덤');
+  const [gender, setGender] = useState<number | null>(null);
+  const [location, setLocation] = useState<number | null>(null);
+  const [grade, setGrade] = useState<number | null>(null);
   const [matching, setMatching] = useState<boolean>(false);
   const [matched, setMatched] = useState<boolean>(false);
-  const [mate, setMate] = useState<{ name: string; location: string } | null>(null);
+  const [mate, setMate] = useState<{ name: number; location: number } | null>(null);
+
+  const filterByCondition = (
+    queryRef: Query,
+    { gender, grade, location }: { gender: number | null; grade: number | null; location: number | null }
+  ): Query => {
+    queryRef = query(queryRef, where("isValid", "==", 0));
+
+    if (gender !== null && gender !== 2) {
+      queryRef = query(queryRef, where("gender", "==", gender));
+    }
+
+    if (location !== null && location !== 3) {
+      queryRef = query(queryRef, where("location", "==", location));
+    }
+
+    if (grade !== null && grade !== 3) {
+      queryRef = query(queryRef, where("grade", "==", grade));k
+    }
+
+    return queryRef;
+  };
 
   const handleMatch = async () => {
     setMatching(true);
@@ -21,32 +41,35 @@ const MatchMate: React.FC = () => {
 
     const user = auth.currentUser;
 
-    const q = query(
-      collection(db, 'room'),
-      where('status', '==', 0),
-      where('wantGender', 'in', [gender, '랜덤']),
-      where('wantGrade', 'in', [grade, '랜덤']),
-      where('location', 'in', [location, '랜덤'])
-    );
+    if(!user?.emailVerified) {
+      alert('이메일 인증이 완료되지 않았습니다. 인증을 완료해주세요.');
+      return;
+    }
 
-    const querySnapshot = await getDocs(q);
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    const userData = userDoc.data();
+
+    let queryRef: Query = collection(db, 'room');
+    queryRef = filterByCondition(queryRef, { gender, grade, location });
+
+    const querySnapshot = await getDocs(queryRef);
     if (!querySnapshot.empty) {
       const room = querySnapshot.docs[0];
-      await addDoc(collection(db, 'room'), {
-        ...room.data(),
-        user_2: user?.name,
-        status: 1
+      await updateDoc(room.ref, {
+        user_2: userData?.name,
+        isValid: 1
       });
       setMate({ name: room.data().user_1, location: room.data().location });
       setMatched(true);
     } else {
       await addDoc(collection(db, 'room'), {
-        user_1: user.name,
+        user_1: userData?.name,
         user_2: '',
-        status: 0,
-        location: location,
-        grade: user.grade,
-        gender: user.gender,
+        isValid: 0,
+        grade: userData?.grade, 
+        gender: userData?.gender,  
+        wantlocation: location,
         wantGrade: grade,
         wantGender: gender,
       });
