@@ -15,7 +15,7 @@ const MatchMate: React.FC = () => {
 
   const filterByCondition = (
     queryRef: Query,
-    { gender, grade, location }: { gender: number | null; grade: number | null; location: number | null }
+    { gender, grade }: { gender: number | null; grade: number | null; }
   ): Query => {
     queryRef = query(queryRef, where("isValid", "==", 0));
 
@@ -23,9 +23,9 @@ const MatchMate: React.FC = () => {
       queryRef = query(queryRef, where("gender", "==", gender));
     }
 
-    if (location !== null && location !== 3) {
-      queryRef = query(queryRef, where("location", "==", location));
-    }
+    // if (location !== null && location !== 3) {
+    //   queryRef = query(queryRef, where("location", "==", location));
+    // }
 
     if (grade !== null && grade !== 3) {
       queryRef = query(queryRef, where("grade", "==", grade));k
@@ -51,29 +51,44 @@ const MatchMate: React.FC = () => {
     const userData = userDoc.data();
 
     let queryRef: Query = collection(db, 'room');
-    queryRef = filterByCondition(queryRef, { gender, grade, location });
+    queryRef = filterByCondition(queryRef, { gender, grade });
 
     const querySnapshot = await getDocs(queryRef);
+    let roomMatched = false;
+
     if (!querySnapshot.empty) {
-      const room = querySnapshot.docs[0];
-      await updateDoc(room.ref, {
-        user_2: userData?.name,
-        isValid: 1
-      });
-      setMate({ name: room.data().user_1, location: room.data().location });
-      setMatched(true);
-    } else {
+      for (const room of querySnapshot.docs) {
+        const roomData = room.data();
+        if (
+          (roomData.wantGrade === grade || roomData.wantGrade === 3) &&
+          (roomData.wantGender === gender || roomData.wantGender === 2) &&
+          (roomData.wantLocation === location || roomData.wantLocation === 3) 
+        ) {
+          await updateDoc(room.ref, {
+            user_2: userData?.name,
+            isValid: 1,
+          });
+          setMate({ name: roomData.user_1, location: roomData.location });
+          setMatched(true);
+          roomMatched = true;
+          break;
+        }
+      }
+    }
+
+    if (!roomMatched) {
       await addDoc(collection(db, 'room'), {
         user_1: userData?.name,
         user_2: '',
         isValid: 0,
-        grade: userData?.grade, 
-        gender: userData?.gender,  
+        grade: userData?.grade,
+        gender: userData?.gender,
         wantlocation: location,
         wantGrade: grade,
         wantGender: gender,
       });
     }
+
     setMatching(false);
   };
 
