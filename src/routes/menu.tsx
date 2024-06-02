@@ -1,10 +1,12 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Menu: React.FC = () => {
+  const navigate = useNavigate();
+
   const handleLogoOnClick = () => {
-    Navigate("/home");
-}
+    navigate("/home");
+  };
   
   return (
     <div className="flex flex-col min-h-screen bg-white">

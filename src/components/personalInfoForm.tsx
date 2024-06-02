@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { auth, db } from "../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import creativeNouns from "./noneArrayList";
 import creativeAds from "./adArrayList";
+import { GENDER, GRADE } from "../constants";
 
 interface CreateAccountProps {
   onNext: () => void; 
@@ -11,8 +12,8 @@ interface CreateAccountProps {
 const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
   const [isLoading, setLoading] = useState(false);
   const [name, setName] = useState<string>("");
-  const [grade, setGrade] = useState<string | null>("");
-  const [gender, setGender] = useState<string | null>("");
+  const [grade, setGrade] = useState<number | null>(null);
+  const [gender, setGender] = useState<number | null>(null);
   const [randomNoun, setRandomNoun] = useState('');
   const [randomAd, setRandomAd] = useState('');
 
@@ -26,11 +27,11 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
     setRandomAd(creativeAds[randomIndex]);
   };
 
-  const handleGradeClick = (selectedGrade: string) => {
+  const handleGradeClick = (selectedGrade: number) => {
     setGrade(selectedGrade);
   };
 
-  const handleGenderClick = (selectedGender: string) => {
+  const handleGenderClick = (selectedGender: number) => {
     setGender(selectedGender);
   };
 
@@ -53,7 +54,7 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
     try{
       setLoading(true);
       alert("Personal Info created successfully!");
-      await addDoc(collection(db, "user"), {
+     /*  await addDoc(collection(db, "user"), {
         name,
         grade,
         gender,
@@ -61,7 +62,17 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
         userId: user?.uid,
         secretNone: randomNoun,
         secretAd: randomAd
-      });
+      }); */
+      const docRef = doc(db, "user", user?.uid);
+      const data = {
+        name,
+        grade,
+        gender,
+        createdAt: Date.now(),
+        secretNone: randomNoun,
+        secretAd: randomAd
+      }
+      await setDoc(docRef, data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -90,13 +101,13 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
         <div className="mb-4">
           <label className="block text-gray-700">학년</label>
           <div className="flex flex-wrap gap-2">
-            {["1학년", "2학년", "3,4학년"].map((gradeOption) => (
+            {GRADE.map((gradeOption, idx) => (
               <button
                 type="button"
                 key={gradeOption}
-                onClick={() => handleGradeClick(gradeOption)}
+                onClick={() => handleGradeClick(idx)}
                 className={`p-2 border rounded w-full ${
-                  grade === gradeOption ? "bg-orange-500 text-white" : "bg-white text-gray-700"
+                  grade === idx ? "bg-orange-500 text-white" : "bg-white text-gray-700"
                 }`}
               >
                 {gradeOption}
@@ -107,13 +118,13 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
         <div className="mb-4">
           <label className="block text-gray-700">성별</label>
           <div className="flex gap-2">
-            {["여성", "남성"].map((genderOption) => (
+            {GENDER.map((genderOption, idx) => (
               <button
                 type="button"
                 key={genderOption}
-                onClick={() => handleGenderClick(genderOption)}
+                onClick={() => handleGenderClick(idx)}
                 className={`p-2 border rounded w-full ${
-                  gender === genderOption ? "bg-orange-500 text-white" : "bg-white text-gray-700"
+                  gender === idx ? "bg-orange-500 text-white" : "bg-white text-gray-700"
                 }`}
               >
                 {genderOption}

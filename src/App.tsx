@@ -10,7 +10,8 @@ import LoginSignup from "./routes/loginSignup"
 import Login from "./components/login"
 import Menu from "./routes/menu"
 import CreateAccountStep from "./routes/createAccount"
-import Matching from "./routes/matching"
+import Matching from "./routes/matchMate"
+import MatchMate from "./components/matchConditions"
 
 
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: "profile",
     element: <Profile />,
+  },
+  {
+    path: "matchMate",
+    element: <MatchMate />,
   },
   {
     path: "login",

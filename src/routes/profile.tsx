@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+import { GENDER, GRADE } from '../constants';
 
-const MyPage: React.FC = () => {
+const Profile: React.FC = () => {
   const [name, setName] = useState<string>('');
-  const [grade, setGrade] = useState<string>('');
-  const [gender, setGender] = useState<string>('');
+  const [grade, setGrade] = useState<number | null>(null);
+  const [gender, setGender] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async (uid: string) => {
       try {
-        const q = query(collection(db, 'user'), where('userId', '==', uid));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          const userData = querySnapshot.docs[0].data();
+        
+        const q = doc(db, 'user', uid)
+        const querySnapshot = await getDoc(q);
+        if (querySnapshot.exists()) {
+          const userData = querySnapshot.data();
           setName(userData.name);
           setGrade(userData.grade);
           setGender(userData.gender);
@@ -36,16 +42,40 @@ const MyPage: React.FC = () => {
   }, []);
 
   const handleUpdate = () => {
-    console.log('Update:', { name, grade, gender });
+    setIsEditing(true);
+  };
+
+  const handleSave = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      const userRef = doc(db, 'user', user.uid)
+      try {
+        await updateDoc(userRef, {
+            name: name,
+            grade: grade,
+            gender: gender,
+          });
+          setIsEditing(false);
+        
+      } catch (error) {
+        console.error('Error updating document:', error);
+      }
+    }
   };
 
   const handleLogout = () => {
     auth.signOut();
+    navigate('/loginSignup');
     console.log('Logout');
+  };
+
+  const handleLogoOnClick = () => {
+    navigate("/home");
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
+      <img onClick= {handleLogoOnClick} src="/images/subLogo.png" alt="Logo" className="w-40 h-20" />
       <div className="bg-white rounded-lg shadow-lg p-8 w-80">
         <h1 className="text-2xl font-bold mb-4">MY page</h1>
         <div className="mb-4">
@@ -55,57 +85,53 @@ const MyPage: React.FC = () => {
             className="w-full p-2 border border-gray-300 rounded mt-1"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            disabled={!isEditing}
           />
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">학년</label>
           <div className="flex space-x-2">
-            <button
-              className={`flex-1 p-2 border rounded ${grade === '1학년' ? 'bg-gray-200' : ''}`}
-              onClick={() => setGrade('1학년')}
+            {GRADE.map((gradeOption, idx) => (
+              <button
+              className={`flex-1 p-2 border rounded ${grade === idx ? 'bg-gray-200' : ''}`}
+              onClick={() => setGrade(idx)}
+              disabled={!isEditing}
             >
-              1학년
+              {gradeOption}
             </button>
-            <button
-              className={`flex-1 p-2 border rounded ${grade === '2학년' ? 'bg-gray-200' : ''}`}
-              onClick={() => setGrade('2학년')}
-            >
-              2학년
-            </button>
-          </div>
-          <div className="flex space-x-2 mt-2">
-            <button
-              className={`flex-1 p-2 border rounded ${grade === '3,4학년' ? 'bg-gray-200' : ''}`}
-              onClick={() => setGrade('3,4학년')}
-            >
-              3,4학년
-            </button>
+            ))}
           </div>
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">성별</label>
           <div className="flex space-x-2">
-            <button
-              className={`flex-1 p-2 border rounded ${gender === '여성' ? 'bg-gray-200' : ''}`}
-              onClick={() => setGender('여성')}
+            {GENDER.map((genderOption, idx) => (
+              <button
+              className={`flex-1 p-2 border rounded ${gender === idx ? 'bg-gray-200' : ''}`}
+              onClick={() => setGender(idx)}
+              disabled={!isEditing}
             >
-              여성
+              {genderOption}
             </button>
-            <button
-              className={`flex-1 p-2 border rounded ${gender === '남성' ? 'bg-gray-200' : ''}`}
-              onClick={() => setGender('남성')}
-            >
-              남성
-            </button>
+            ))}
           </div>
         </div>
         <div className="flex space-x-4">
-          <button
-            className="flex-1 bg-orange-400 text-white py-2 rounded"
-            onClick={handleUpdate}
-          >
-            수정하기
-          </button>
+          {isEditing ? (
+            <button
+              className="flex-1 bg-orange-400 text-white py-2 rounded"
+              onClick={handleSave}
+            >
+              완료
+            </button>
+          ) : (
+            <button
+              className="flex-1 bg-orange-400 text-white py-2 rounded"
+              onClick={handleUpdate}
+            >
+              수정하기
+            </button>
+          )}
           <button
             className="flex-1 bg-orange-400 text-white py-2 rounded"
             onClick={handleLogout}
@@ -118,4 +144,4 @@ const MyPage: React.FC = () => {
   );
 };
 
-export default MyPage;
+export default Profile;
