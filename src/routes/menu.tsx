@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface MenuItem {
   menu: string;
@@ -168,7 +169,7 @@ const menuData: MenuData = {
 };
 
 const Card: React.FC<CardProps> = ({ title, data }) => (
-  <div className="p-6 border border-gray-300 rounded-lg shadow-md mb-6">
+  <div className="p-6 border border-button rounded-lg shadow-md mb-6">
     <h3 className="text-lg font-bold mb-4 text-center">{title}</h3>
     <div>
       {data.map((category, index) => (
@@ -204,16 +205,26 @@ const MenuSection: React.FC<MenuSectionProps> = ({ title, data }) => (
   </div>
 );
 
-const Menu: React.FC = () => (
-  <div className="container mx-auto p-8 bg-gray-50">
-    <div className="text-center mb-12">
-      <img src="path/to/logo.png" alt="logo" className="mx-auto mb-4" />
-      <h1 className="text-3xl font-bold">학식메뉴확인</h1>
+const Menu: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleOnClick = () => {
+    navigate("/home");
+  }
+
+  return (
+  <div className="flex flex-col min-h-screen p-8 bg-white">
+    <div className="mb-12">
+      <div className="flex flex-col items-center justify-center mt-10">
+        <img onClick={handleOnClick} src="/images/subLogo.png" alt="Logo" className="w-48 h-24" />
+      </div>
+      <h1 className="text-2xl mt-10 font-bold text-gray-500">학식메뉴확인</h1>
     </div>
     <MenuSection title="어문학관" data={{ pasta: menuData.pasta, toast: menuData.toast, rice: menuData.rice }} />
     <MenuSection title="후생관" data={{ 후생관식당: menuData.schoolMeal }} />
     <MenuSection title="기숙사식당" data={{ HUFSDORM: menuData.dorm }} />
   </div>
-);
+  )
+};
 
 export default Menu;

@@ -13,6 +13,10 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const handleOnClick = () => {
+    navigate("/loginSignup");
+  }
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "email") {
@@ -42,7 +46,7 @@ const Login: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <div className="flex items-center justify-center mt-16">
-        <img src="/images/subLogo.png" alt="Logo" className="w-48 h-24" />
+        <img onClick={handleOnClick} src="/images/subLogo.png" alt="Logo" className="w-48 h-24" />
       </div>
       <h1 className="text-2xl mt-20 mb-6 text-gray-500 ml-6">로그인</h1>
       <form onSubmit={onSubmit} className="bg-white w-full h-screen flex flex-col pb-12 px-6">

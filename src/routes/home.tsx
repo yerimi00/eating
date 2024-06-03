@@ -21,7 +21,7 @@ const App: React.FC = () => {
       <div className="mb-10">
       <img src="/images/mainLogo.png" alt="Logo" className="w-64 h-64" />
       </div>
-      <div className="w-full max-w-xs">
+      <div className="flex flex-col items-center justify-center">
         <button onClick={handleMatchingOnClick} className="w-64 shadow-md bg-loginSignupBt text-white py-2 px-4 rounded-md mb-4">
           매칭 시작하기
         </button>

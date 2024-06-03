@@ -140,7 +140,7 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
           </div>
         </div>
 
-        <Button name={isLoading ? "Loading..." : "가입하긴"} />
+        <Button name={isLoading ? "Loading..." : "가입하기"} />
       </form>
     </div>
   );
