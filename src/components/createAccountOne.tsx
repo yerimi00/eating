@@ -52,7 +52,7 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onNext }) => {
   };
 
   return (
-    <div className="flex  min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white">
       <form
         onSubmit={onSubmit}
         className="bg-white w-full h-screen flex flex-col justify-between pt-32 pb-12 px-6 "
@@ -67,7 +67,6 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onNext }) => {
             onChange={onChange}
             placeholder="ex)202412345@hufs.ac.kr"
           />
-
           <CreateInput
             label="비밀번호"
             name="password"

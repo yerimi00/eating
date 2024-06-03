@@ -18,6 +18,11 @@ interface MenuData {
   schoolMeal: MenuCategory[];
 }
 
+interface CardProps {
+  title: string;
+  data: MenuCategory[];
+}
+
 const menuData: MenuData = {
   pasta: [
     {
@@ -161,11 +166,6 @@ const menuData: MenuData = {
     },
   ],
 };
-
-interface CardProps {
-  title: string;
-  data: MenuCategory[];
-}
 
 const Card: React.FC<CardProps> = ({ title, data }) => (
   <div className="p-6 border border-gray-300 rounded-lg shadow-md mb-6">

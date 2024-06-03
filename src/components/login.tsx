@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
+import Button from "./button";
+import CreateInput from "./createAccountInput";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +29,7 @@ const Login: React.FC = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
+      navigate("/home");
     } catch (e) {
       if (e instanceof FirebaseError) {
         setError(e.message);
@@ -38,32 +40,29 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center h-screen w-full max-w-md mx-auto p-12">
-      <h1 className="text-4xl mb-12">Log into 𝕏</h1>
-      <form onSubmit={onSubmit} className="flex flex-col gap-3 w-full">
-        <input
-          onChange={onChange}
-          name="email"
-          value={email}
-          placeholder="Email"
-          type="email"
-          required
-          className="p-3 rounded-full border-none w-full text-lg"
-        />
-        <input
-          onChange={onChange}
-          name="password"
-          value={password}
-          placeholder="Password"
-          type="password"
-          required
-          className="p-3 rounded-full border-none w-full text-lg"
-        />
-        <input
-          type="submit"
-          value={isLoading ? "Loading..." : "Log in"}
-          className="p-3 rounded-full border-none w-full text-lg cursor-pointer bg-blue-500 text-white hover:opacity-80"
-        />
+    <div className="flex flex-col min-h-screen bg-white">
+      <div className="flex items-center justify-center mt-16">
+        <img src="/images/subLogo.png" alt="Logo" className="w-48 h-24" />
+      </div>
+      <h1 className="text-2xl mt-20 mb-6 text-gray-500 ml-6">로그인</h1>
+      <form onSubmit={onSubmit} className="bg-white w-full h-screen flex flex-col pb-12 px-6">
+      <CreateInput
+            label="학교이메일(Email)"
+            name="email"
+            type="email"
+            value={email}
+            onChange={onChange}
+            placeholder="ex)202412345@hufs.ac.kr"
+          />
+      <CreateInput
+            label="비밀번호"
+            name="password"
+            type="password"
+            value={password}
+            onChange={onChange}
+            placeholder="비밀번호"
+          />
+        <Button name={isLoading ? "Loading..." : "로그인하기"} />
       </form>
       {error && <span className="font-semibold text-red-500 mt-3">{error}</span>}
     </div>

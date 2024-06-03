@@ -6,7 +6,7 @@ interface IButtonProps {
 
 const Button: React.FC<IButtonProps> = ({ name }) => {
   return (
-    <button className="bg-loginSignupBt text-white font-semibold tracking-wider py-4  rounded w-full">
+    <button className="bg-button text-white font-semibold tracking-wider py-4  rounded w-full">
       {name}
     </button>
   );
