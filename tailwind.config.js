@@ -7,7 +7,7 @@ export default {
     extend: {
       colors: {
         background: '#fff3e3',
-        loginSignupBt: '#ffc800',
+        loginSignupBt: '#fab473',
       },
     },
   },

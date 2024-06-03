@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { sendEmailVerification } from "firebase/auth";
-import { auth } from '../firebase';
+import { auth } from "../firebase";
+import CreateHeader from "./createAccountHeader";
 
 interface CreateAccountProps {
-  onNext: () => void; 
+  onNext: () => void;
 }
 
 const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
@@ -41,7 +42,7 @@ const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
     }
   };
 
-  const onClick = async() => {
+  const onClick = async () => {
     const user = auth.currentUser;
     if (!user) {
       setMessage("No user signed in.");
@@ -49,48 +50,61 @@ const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
     }
 
     await user.reload();
-    setUserVerified(user.emailVerified); 
-    
+    setUserVerified(user.emailVerified);
+
     if (userVerified) {
-      onNext(); 
+      onNext();
     } else {
-      setMessage("Please verify your email before proceeding."); 
+      setMessage("Please verify your email before proceeding.");
     }
-  }
-  
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={onSubmit} className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl mb-6 text-center">이메일 인증</h2>
-        <div className="mb-4">
-          <label className="block text-gray-700">이메일</label>
-          <input
-            type="email"
-            value={email}
-            onChange={onChange}
-            className="mt-2 p-2 border border-gray-300 rounded w-full"
-            placeholder="이메일을 입력하세요"
-            required
-          />
-        </div>
+    <div className="flex flex-col justify-between min-h-screen bg-white">
+      <div className="bg-white w-full h-screen flex flex-col justify-between pt-32 pb-12 px-6 ">
+        <form onSubmit={onSubmit}>
+          <div>
+            <CreateHeader sequence={2} title="학교인증하기" />
+
+            <div className="mb-5">
+              <label className="block text-sm font-semibold text-gray-600 tracking-wide">
+                학교이메일(Email)
+              </label>
+              <div className="flex w-full mt-3">
+                <input
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={onChange}
+                  className=" p-3.5 text-sm border border-gray-300 rounded w-full"
+                  placeholder="ex)202412345@hufs.ac.kr"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="ml-5 bg-loginSignupBt text-sm text-white py-2  rounded w-32"
+                >
+                  {isLoading ? "Loading..." : "인증하기"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {message && (
+            <p className="mt-4 text-center text-gray-700">{message}</p>
+          )}
+        </form>
+
         <button
-          type="submit"
-          disabled={isLoading}
-          className="bg-blue-500 text-white py-2 px-4 rounded w-full"
+          onClick={onClick}
+          className="bg-loginSignupBt text-white font-semibold tracking-wider py-4  rounded w-full"
         >
-          {isLoading ? "Loading..." : "인증 이메일 보내기"}
+          다음
         </button>
-        {message && (
-          <p className="mt-4 text-center text-gray-700">{message}</p>
-        )}
-      </form>
-      <button onClick={onClick} className='bg-blue-500 text-white mt-4 py-2 px-4 rounded w-full'>
-        다음
-      </button>
+      </div>
     </div>
   );
 };
 
 export default VerifyEmail;
-
-

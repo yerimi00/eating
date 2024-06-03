@@ -262,6 +262,7 @@ const MatchMate: React.FC = () => {
         location,  // 수정: wantlocation -> location
         wantGrade: grade,
         wantGender: gender,
+        // wantLocation: location,
       });
       setCreatedRoomId(newRoomRef.id);
     }

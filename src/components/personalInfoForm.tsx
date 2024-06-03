@@ -4,9 +4,12 @@ import { doc, setDoc } from "firebase/firestore";
 import creativeNouns from "./noneArrayList";
 import creativeAds from "./adArrayList";
 import { GENDER, GRADE } from "../constants";
+import CreateHeader from "./createAccountHeader";
+import CreateInput from "./createAccountInput";
+import Button from "./button";
 
 interface CreateAccountProps {
-  onNext: () => void; 
+  onNext: () => void;
 }
 
 const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
@@ -14,8 +17,8 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
   const [name, setName] = useState<string>("");
   const [grade, setGrade] = useState<number | null>(null);
   const [gender, setGender] = useState<number | null>(null);
-  const [randomNoun, setRandomNoun] = useState('');
-  const [randomAd, setRandomAd] = useState('');
+  const [randomNoun, setRandomNoun] = useState("");
+  const [randomAd, setRandomAd] = useState("");
 
   const getRandomNoun = () => {
     const randomIndex = Math.floor(Math.random() * creativeNouns.length);
@@ -36,7 +39,9 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {target: {name, value}} = e;
+    const {
+      target: { name, value },
+    } = e;
     getRandomNoun();
     getRandomAd();
     const user = auth.currentUser;
@@ -44,14 +49,14 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
       setName(value);
     }
     console.log(user);
-  }
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const user = auth.currentUser;
 
     if (!user || isLoading || name === "") return;
-    try{
+    try {
       setLoading(true);
       alert("Personal Info created successfully!");
       const docRef = doc(db, "user", user?.uid);
@@ -61,8 +66,8 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
         gender,
         createdAt: Date.now(),
         secretNone: randomNoun,
-        secretAd: randomAd
-      }
+        secretAd: randomAd,
+      };
       await setDoc(docRef, data);
     } catch (error) {
       console.log(error);
@@ -74,62 +79,68 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={onSubmit} className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl mb-6 text-center">개인정보입력</h2>
-        <div className="mb-4">
-          <label className="block text-gray-700">이름</label>
-          <input
+    <div className="flex  min-h-screen bg-white">
+      <form
+        onSubmit={onSubmit}
+        className="bg-white w-full h-screen flex flex-col justify-between pt-32 pb-12 px-6 "
+      >
+        <div>
+          <CreateHeader sequence={3} title="개인정보입력" />
+          <CreateInput
+            label="이름"
             name="name"
             type="text"
             value={name}
             onChange={onChange}
-            className="mt-2 p-2 border border-gray-300 rounded w-full"
             placeholder="이름"
-            required
           />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">학년</label>
-          <div className="flex flex-wrap gap-2">
-            {GRADE.map((gradeOption, idx) => (
-              <button
-                type="button"
-                key={gradeOption}
-                onClick={() => handleGradeClick(idx)}
-                className={`p-2 border rounded w-full ${
-                  grade === idx ? "bg-orange-500 text-white" : "bg-white text-gray-700"
-                }`}
-              >
-                {gradeOption}
-              </button>
-            ))}
+          <div className="mb-5">
+            <label className="block text-sm font-semibold text-gray-600 tracking-wide mb-2">
+              학년
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {GRADE.map((gradeOption, idx) => (
+                <button
+                  type="button"
+                  key={gradeOption}
+                  onClick={() => handleGradeClick(idx)}
+                  className={`p-3.5 border  rounded text-sm  ${
+                    idx === 2 ? "col-span-2" : ""
+                  } ${
+                    grade === idx
+                      ? "border-loginSignupBt bg-loginSignupBt text-white"
+                      : " border-gray-300 bg-white text-gray-400"
+                  }`}
+                >
+                  {gradeOption}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mb-5">
+            <label className="block text-sm font-semibold text-gray-600 tracking-wide mb-2">
+              성별
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {GENDER.map((genderOption, idx) => (
+                <button
+                  type="button"
+                  key={genderOption}
+                  onClick={() => handleGenderClick(idx)}
+                  className={`p-3.5 border  rounded text-sm ${
+                    gender === idx
+                      ? "border-loginSignupBt bg-loginSignupBt text-white"
+                      : " border-gray-300 bg-white text-gray-400"
+                  }`}
+                >
+                  {genderOption}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">성별</label>
-          <div className="flex gap-2">
-            {GENDER.map((genderOption, idx) => (
-              <button
-                type="button"
-                key={genderOption}
-                onClick={() => handleGenderClick(idx)}
-                className={`p-2 border rounded w-full ${
-                  gender === idx ? "bg-orange-500 text-white" : "bg-white text-gray-700"
-                }`}
-              >
-                {genderOption}
-              </button>
-            ))}
-          </div>
-        </div>
-        <button
-          type="submit"
-          value={isLoading? "Loading..." : "Input Personal Info"}
-          className="bg-orange-500 text-white py-2 px-4 rounded w-full mt-4"
-        >
-          가입하기
-        </button>
+
+        <Button name={isLoading ? "Loading..." : "가입하긴"} />
       </form>
     </div>
   );
