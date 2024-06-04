@@ -24,39 +24,57 @@ const MatchConditions: React.FC<MatchConditionsProps> = ({
     <>
       <div className="mb-5 mt-6">
         <label className="block text-sm font-semibold text-gray-600 tracking-wide">성별</label>
-        <div className="flex space-x-2">
+        <div className="grid grid-cols-2 gap-3">
           {CONDITIONGENDER.map((conditionGender, idx) => (
             <button
               type="button"
               key={conditionGender}
               onClick={() => setGender(idx)}
-              className={`flex-1 p-2 border rounded ${gender === idx? 'bg-gray-200' : ''}`}
+              className={`p-3.5 border  rounded text-sm  ${
+                idx === 2 ? "col-span-2" : ""
+              } ${
+                gender === idx
+                  ? "border-loginSignupBt bg-loginSignupBt text-white"
+                  : " border-gray-300 bg-white text-gray-400"
+              }`}
             >
               {conditionGender}
             </button>
           ))}
         </div>
       </div>
-      <div className="mb-4">
+      <div className="mb-5">
         <label className="block text-gray-700 mb-2">장소</label>
-        <div className="flex space-x-2">
+        <div className="grid grid-cols-2 gap-4">
           {CONDITIONLOCATION.map((conditionLocation, idx) => (
             <button
-            className={`flex-1 p-2 border rounded ${location === idx? 'bg-gray-200' : ''}`}
+            type="button"
+            key={conditionLocation}
             onClick={() => setLocation(idx)}
+            className={`p-3.5 border  rounded text-sm 
+            ${location === idx
+                ? "border-loginSignupBt bg-loginSignupBt text-white"
+                : " border-gray-300 bg-white text-gray-400"
+            }`}
             >
             {conditionLocation}
             </button>
           ))}
         </div>
       </div>
-      <div className="mb-4">
+      <div className="mb-5">
         <label className="block text-gray-700 mb-2">학년</label>
-        <div className="flex space-x-2">
+        <div className="grid grid-cols-2 gap-4">
           {CONDITIONGRADE.map((conditionGrade, idx) => (
             <button
-            className={`flex-1 p-2 border rounded ${grade === idx? 'bg-gray-200' : ''}`}
+            type="button"
+            key={conditionGrade}
             onClick={() => setGrade(idx)}
+            className={`p-3.5 border  rounded text-sm 
+            ${grade === idx
+                ? "border-loginSignupBt bg-loginSignupBt text-white"
+                : " border-gray-300 bg-white text-gray-400"
+            }`}
             >
               {conditionGrade}
             </button>
@@ -64,7 +82,7 @@ const MatchConditions: React.FC<MatchConditionsProps> = ({
         </div>
       </div>
       <button
-        className="w-full bg-orange-400 text-white py-2 rounded"
+        className="bg-button text-white font-semibold tracking-wider py-4  rounded w-full"
         onClick={handleMatch}
       >
         매칭하기
