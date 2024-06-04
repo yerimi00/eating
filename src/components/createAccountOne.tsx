@@ -41,7 +41,7 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onNext }) => {
         email,
         password
       );
-      alert("Account created successfully!");
+      // alert("Account created successfully!");
       console.log(credentials.user);
     } catch (error) {
       // alert((error as any).message);

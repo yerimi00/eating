@@ -58,7 +58,7 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
     if (!user || isLoading || name === "") return;
     try {
       setLoading(true);
-      alert("Personal Info created successfully!");
+      // alert("Personal Info created successfully!");
       const docRef = doc(db, "user", user?.uid);
       const data = {
         name,
@@ -108,7 +108,7 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
                     idx === 2 ? "col-span-2" : ""
                   } ${
                     grade === idx
-                      ? "border-loginSignupBt bg-loginSignupBt text-white"
+                      ? "border-button bg-button text-white"
                       : " border-gray-300 bg-white text-gray-400"
                   }`}
                 >
@@ -129,7 +129,7 @@ const PersonalInfoForm: React.FC<CreateAccountProps> = ({ onNext }) => {
                   onClick={() => handleGenderClick(idx)}
                   className={`p-3.5 border  rounded text-sm ${
                     gender === idx
-                      ? "border-loginSignupBt bg-loginSignupBt text-white"
+                      ? "border-button bg-button text-white"
                       : " border-gray-300 bg-white text-gray-400"
                   }`}
                 >

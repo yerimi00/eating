@@ -27,15 +27,15 @@ const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
       const user = auth.currentUser;
       if (user && user.email === email) {
         await sendEmailVerification(user);
-        setMessage("Verification email sent. Please check your inbox.");
+        setMessage("확인 메일을 보냈습니다. 메일함을 확인해주세요.");
       } else {
-        setMessage("No user found with this email address.");
+        setMessage("이 이메일 주소를 가진 사용자를 찾을 수 없습니다.");
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setMessage(error.message);
       } else {
-        setMessage("An unknown error occurred");
+        setMessage("이 이메일 주소를 가진 사용자를 찾을 수 없습니다.");
       }
     } finally {
       setIsLoading(false);
@@ -55,7 +55,7 @@ const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
     if (userVerified) {
       onNext();
     } else {
-      setMessage("Please verify your email before proceeding.");
+      setMessage("보낸 메일이 확인되지 않았습니다. 이메일을 확인해주세요.");
     }
   };
 
@@ -83,7 +83,7 @@ const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="ml-5 bg-loginSignupBt text-sm text-white py-2  rounded w-32"
+                  className="ml-5 bg-button text-sm text-white py-2  rounded w-32"
                 >
                   {isLoading ? "Loading..." : "인증하기"}
                 </button>
@@ -98,7 +98,7 @@ const VerifyEmail: React.FC<CreateAccountProps> = ({ onNext }) => {
 
         <button
           onClick={onClick}
-          className="bg-loginSignupBt text-white font-semibold tracking-wider py-4  rounded w-full"
+          className="bg-button text-white font-semibold tracking-wider py-4  rounded w-full"
         >
           다음
         </button>
