@@ -218,7 +218,7 @@ const Menu: React.FC = () => {
       <div className="flex flex-col items-center justify-center mt-10">
         <img onClick={handleOnClick} src="/images/subLogo.png" alt="Logo" className="w-48 h-24" />
       </div>
-      <h1 className="text-2xl mt-10 font-bold text-gray-500">학식메뉴확인</h1>
+      <h1 className="text-2xl mt-6 font-bold text-gray-500">학식메뉴확인</h1>
     </div>
     <MenuSection title="어문학관" data={{ pasta: menuData.pasta, toast: menuData.toast, rice: menuData.rice }} />
     <MenuSection title="후생관" data={{ 후생관식당: menuData.schoolMeal }} />

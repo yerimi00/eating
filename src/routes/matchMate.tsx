@@ -169,6 +169,7 @@ import { auth, db } from '../firebase';
 import MatchConditions from '../components/matchConditions';
 import MatchComplete from '../components/matchComplete';
 import Matching from '../components/\bmatching';
+import { useNavigate } from 'react-router-dom';
 
 const MatchMate: React.FC = () => {
   const [gender, setGender] = useState<number | null>(null);
@@ -178,6 +179,12 @@ const MatchMate: React.FC = () => {
   const [matched, setMatched] = useState<boolean>(false);
   const [mate, setMate] = useState<{ name: string; location: number } | null>(null);
   const [createdRoomId, setCreatedRoomId] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleOnClick = () => {
+    navigate("/home");
+  }
 
   const filterByCondition = (
     queryRef: Query,
@@ -297,9 +304,14 @@ const MatchMate: React.FC = () => {
   }, [createdRoomId]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-80">
-        <h1 className="text-2xl font-bold mb-4">학식 메이트 매칭하기</h1>
+    <div className="flex flex-col items-center justify-center bg-white">
+      <div className="bg-white rounded-lg p-8 w-full">
+        <div className='mb-6'>
+          <div className="flex flex-col items-center justify-center mt-10">
+            <img onClick={handleOnClick} src="/images/subLogo.png" alt="Logo" className="w-48 h-24"/>
+          </div>
+        </div>
+        <h1 className="text-2xl font-bold text-gray-500">학식 메이트 매칭하기</h1>
         {!matching && !matched && (
           <MatchConditions
             gender={gender}

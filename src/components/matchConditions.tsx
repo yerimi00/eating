@@ -22,13 +22,15 @@ const MatchConditions: React.FC<MatchConditionsProps> = ({
 }) => {
   return (
     <>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-2">성별</label>
+      <div className="mb-5 mt-6">
+        <label className="block text-sm font-semibold text-gray-600 tracking-wide">성별</label>
         <div className="flex space-x-2">
           {CONDITIONGENDER.map((conditionGender, idx) => (
             <button
-              className={`flex-1 p-2 border rounded ${gender === idx? 'bg-gray-200' : ''}`}
+              type="button"
+              key={conditionGender}
               onClick={() => setGender(idx)}
+              className={`flex-1 p-2 border rounded ${gender === idx? 'bg-gray-200' : ''}`}
             >
               {conditionGender}
             </button>

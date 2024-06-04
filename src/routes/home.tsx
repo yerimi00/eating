@@ -5,7 +5,7 @@ const App: React.FC = () => {
     const navigate = useNavigate();
 
     const handleMatchingOnClick = () => {
-        navigate("/matching");
+        navigate("/matchMate");
     }
 
     const handleMenuOnClick = () => {

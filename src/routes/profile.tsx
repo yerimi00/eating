@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { GENDER, GRADE } from '../constants';
+import CreateProfileInput from '../components/createProfileInput';
 
 const Profile: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -74,71 +75,94 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <img onClick= {handleLogoOnClick} src="/images/subLogo.png" alt="Logo" className="w-40 h-20" />
-      <div className="bg-white rounded-lg shadow-lg p-8 w-80">
-        <h1 className="text-2xl font-bold mb-4">MY page</h1>
+    <div className="flex min-h-screen bg-white p-8">
+      <div className='flex flex-col item-center justify-center bg-white w-full'>
+        <div className='flex items-center justify-center mt-10'>
+        <img onClick={handleLogoOnClick} src="/images/subLogo.png" alt="Logo" className="w-48 h-24" />
+        </div>
+      <div className="bg-white rounded-lg w-full">
+        <h1 className="text-2xl mb-6 mt-6 font-bold text-gray-500">MY page</h1>
         <div className="mb-4">
-          <label className="block text-gray-700">이름</label>
-          <input
+          <CreateProfileInput
+            label="이름"
+            name="name"
             type="text"
-            className="w-full p-2 border border-gray-300 rounded mt-1"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            placeholder=''
             disabled={!isEditing}
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">학년</label>
-          <div className="flex space-x-2">
+        <div className="mb-5">
+          <label className="block text-sm font-semibold text-gray-600 tracking-wide mb-2">
+              학년
+            </label>
+            <div className="grid grid-cols-2 gap-3">
             {GRADE.map((gradeOption, idx) => (
-              <button
-              className={`flex-1 p-2 border rounded ${grade === idx ? 'bg-gray-200' : ''}`}
-              onClick={() => setGrade(idx)}
-              disabled={!isEditing}
-            >
-              {gradeOption}
-            </button>
+                <button
+                  type="button"
+                  key={gradeOption}
+                  onClick={() => setGrade(idx)}
+                  disabled={!isEditing}
+                  className={`p-3.5 border  rounded text-sm  ${
+                    idx === 2 ? "col-span-2" : ""
+                  } ${
+                    grade === idx
+                      ? "border-loginSignupBt bg-loginSignupBt text-white"
+                      : " border-gray-300 bg-white text-gray-400"
+                  }`}
+                >
+                  {gradeOption}
+                </button>
             ))}
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">성별</label>
-          <div className="flex space-x-2">
+        <div className="mb-5">
+            <label className="block text-sm font-semibold text-gray-600 tracking-wide mb-2">
+              성별
+            </label>
+            <div className="grid grid-cols-2 gap-3">
             {GENDER.map((genderOption, idx) => (
               <button
-              className={`flex-1 p-2 border rounded ${gender === idx ? 'bg-gray-200' : ''}`}
+              type="button"
+              key={genderOption}
               onClick={() => setGender(idx)}
               disabled={!isEditing}
+              className={`p-3.5 border  rounded text-sm ${
+                gender === idx
+                  ? "border-loginSignupBt bg-loginSignupBt text-white"
+                  : " border-gray-300 bg-white text-gray-400"
+              }`}
             >
               {genderOption}
             </button>
             ))}
           </div>
         </div>
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 mt-44">
           {isEditing ? (
             <button
-              className="flex-1 bg-orange-400 text-white py-2 rounded"
+              className="flex-1 bg-button text-white font-semibold tracking-wider py-4  rounded w-full"
               onClick={handleSave}
             >
               완료
             </button>
           ) : (
             <button
-              className="flex-1 bg-orange-400 text-white py-2 rounded"
+              className="flex-1 bg-button text-white font-semibold tracking-wider py-4  rounded w-full"
               onClick={handleUpdate}
             >
               수정하기
             </button>
           )}
           <button
-            className="flex-1 bg-orange-400 text-white py-2 rounded"
+            className="flex-1 bg-button text-white font-semibold tracking-wider py-4 rounded w-full"
             onClick={handleLogout}
           >
             로그아웃
           </button>
         </div>
+      </div>
       </div>
     </div>
   );
