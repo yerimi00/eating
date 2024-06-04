@@ -6,6 +6,12 @@ import MatchComplete from '../components/matchComplete';
 import Matching from '../components/\bmatching';
 import { useNavigate } from 'react-router-dom';
 
+interface IUserData {
+  gender: number
+  grade: number
+  name: string
+}
+
 const MatchMate: React.FC = () => {
   const [gender, setGender] = useState<number | null>(null);
   const [location, setLocation] = useState<number | null>(null);
@@ -53,7 +59,8 @@ const MatchMate: React.FC = () => {
 
     const userDocRef = doc(db, 'user', user.uid);
     const userDoc = await getDoc(userDocRef);
-    const userData = userDoc.data();
+    const userData = userDoc.data() as IUserData;
+    const {grade: myGrade, gender: MyGender, name: MyName} = userData;
 
     let queryRef: Query = collection(db, 'room');
     queryRef = filterByCondition(queryRef, { gender, grade });
@@ -64,26 +71,26 @@ const MatchMate: React.FC = () => {
     if (!querySnapshot.empty) {
       for (const room of querySnapshot.docs) {
         const roomData = room.data();
-        if (roomData.wantGrade !== 3) {
-          if (roomData.wantGrade === grade) {
+        if (roomData.wantGrade < 3) {
+          if (roomData.wantGrade !== myGrade) {
             continue;
           } 
         }
 
-        if (roomData.wantGender !== 2) {
-          if (roomData.wantGender === gender) {
+        if (roomData.wantGender < 2) {
+          if (roomData.wantGender !== MyGender) {
             continue;
           } 
         }
 
-        if (roomData.wantLocation !== 3) {
-          if (roomData.wantLocation === location) {
+        if (roomData.wantLocation < 3) {
+          if (roomData.wantLocation !== location) {
             continue;
           } 
         }
 
         await updateDoc(room.ref, {
-            user_2: userData?.name,
+            user_2: MyName,
             isValid: 1,
         });
         setMate({ name: roomData.user_1, location: roomData.location }); // 수정: wantLocation -> location
@@ -96,12 +103,12 @@ const MatchMate: React.FC = () => {
 
     if (!roomMatched) {
       const newRoomRef = await addDoc(collection(db, 'room'), {
-        user_1: userData?.name,
+        user_1: MyName,
         user_2: '',
         isValid: 0,
-        grade: userData?.grade,
-        gender: userData?.gender,
-        location,  // 수정: wantlocation -> location
+        grade: myGrade,
+        gender: MyGender,
+        location:Math.floor(Math.random() * 2),  // 수정: wantlocation -> location
         wantGrade: grade,
         wantGender: gender,
         // wantLocation: location,
