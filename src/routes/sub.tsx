@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs, addDoc, Query, doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import MatchConditions from '../components/matchConditions';
-import MatchComplete from '../components/matchComplete';
 import Matching from '../components/\bmatching';
-import { useNavigate } from 'react-router-dom';
+import MatchComplete from '../components/matchComplete';
 
 const MatchMate: React.FC = () => {
   const [gender, setGender] = useState<number | null>(null);
@@ -14,12 +13,6 @@ const MatchMate: React.FC = () => {
   const [matched, setMatched] = useState<boolean>(false);
   const [mate, setMate] = useState<{ name: string; location: number } | null>(null);
   const [createdRoomId, setCreatedRoomId] = useState<string | null>(null);
-
-  const navigate = useNavigate();
-
-  const handleOnClick = () => {
-    navigate("/home");
-  }
 
   const filterByCondition = (
     queryRef: Query,
@@ -45,9 +38,9 @@ const MatchMate: React.FC = () => {
 
     const user = auth.currentUser;
 
+    
     if(!user?.emailVerified) {
       alert('이메일 인증이 완료되지 않았습니다. 인증을 완료해주세요.');
-      setMatching(false);
       return;
     }
 
@@ -61,6 +54,8 @@ const MatchMate: React.FC = () => {
     const querySnapshot = await getDocs(queryRef);
     let roomMatched = false;
 
+    console.log(querySnapshot);
+    
     if (!querySnapshot.empty) {
       for (const room of querySnapshot.docs) {
         const roomData = room.data();
@@ -76,7 +71,7 @@ const MatchMate: React.FC = () => {
           } 
         }
 
-        if (roomData.wantLocation !== 3) {
+        if (roomData.wantLocation!== 3) {
           if (roomData.wantLocation === location) {
             continue;
           } 
@@ -86,38 +81,38 @@ const MatchMate: React.FC = () => {
             user_2: userData?.name,
             isValid: 1,
         });
-        setMate({ name: roomData.user_1, location: roomData.location }); // 수정: wantLocation -> location
+        setMate({ name: roomData.user_1, location: roomData.wantLocation });
         setMatching(false);
         setMatched(true);
         roomMatched = true;
         break;
+        
       }
-    } 
-
-    if (!roomMatched) {
-      const newRoomRef = await addDoc(collection(db, 'room'), {
-        user_1: userData?.name,
-        user_2: '',
-        isValid: 0,
-        grade: userData?.grade,
-        gender: userData?.gender,
-        location,  // 수정: wantlocation -> location
-        wantGrade: grade,
-        wantGender: gender,
-        // wantLocation: location,
-      });
-      setCreatedRoomId(newRoomRef.id);
+    } else{
+      if (!roomMatched) {
+        const newRoomRef = await addDoc(collection(db, 'room'), {
+          user_1: userData?.name,
+          user_2: '',
+          isValid: 0,
+          grade: userData?.grade,
+          gender: userData?.gender,
+          wantlocation: location,
+          wantGrade: grade,
+          wantGender: gender,
+        });
+        setCreatedRoomId(newRoomRef.id);
+      }
     }
   };
 
-  const handleCancel = async () => {
+  const handleCancel = async() => {
     setMatching(false);
     setMatched(false);
     setMate(null);
 
     if (createdRoomId) {
       const roomRef = doc(db, 'room', createdRoomId);
-      await updateDoc(roomRef, { isValid: 1 });
+      await updateDoc(roomRef, { isValid: 1});
     }
 
     setCreatedRoomId(null);
@@ -129,7 +124,7 @@ const MatchMate: React.FC = () => {
       const unsubscribe = onSnapshot(roomRef, (doc) => {
         const roomData = doc.data();
         if (roomData && roomData.isValid === 1 && roomData.user_2 !== '') {
-          setMate({ name: roomData.user_2, location: roomData.location }); // 수정: wantLocation -> location
+          setMate({ name: roomData.user_2, location: roomData.wantLocation });
           setMatching(false);
           setMatched(true);
         }
@@ -139,14 +134,9 @@ const MatchMate: React.FC = () => {
   }, [createdRoomId]);
 
   return (
-    <div className="flex flex-col items-center justify-center bg-white">
-      <div className="bg-white rounded-lg p-8 w-full">
-        <div className='mb-6'>
-          <div className="flex flex-col items-center justify-center mt-10">
-            <img onClick={handleOnClick} src="/images/subLogo.png" alt="Logo" className="w-48 h-24"/>
-          </div>
-        </div>
-        <h1 className="text-2xl font-bold text-gray-500">학식 메이트 매칭하기</h1>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white rounded-lg shadow-lg p-8 w-80">
+        <h1 className="text-2xl font-bold mb-4">학식 메이트 매칭하기</h1>
         {!matching && !matched && (
           <MatchConditions
             gender={gender}
