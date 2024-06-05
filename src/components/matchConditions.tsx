@@ -23,7 +23,7 @@ const MatchConditions: React.FC<MatchConditionsProps> = ({
   return (
     <>
       <div className="mb-5 mt-6">
-        <label className="block text-sm font-semibold text-gray-600 tracking-wide">성별</label>
+        <label className="block text-sm font-semibold text-gray-600 tracking-wide">성별</label>  
         <div className="grid grid-cols-2 gap-3">
           {CONDITIONGENDER.map((conditionGender, idx) => (
             <button
@@ -92,3 +92,6 @@ const MatchConditions: React.FC<MatchConditionsProps> = ({
 };
 
 export default MatchConditions;
+
+
+
